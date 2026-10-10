@@ -1,7 +1,7 @@
 # Put this file in the repo PrayerApp-releases at:  .github/workflows/notify.yml
 # Every time notifications.json is changed on main, every phone that has the app gets a tiny "ping"
 # and reads the file right away (the text comes from the file, not from the ping).
-# Needs the repository secret FIREBASE_SERVICE_ACCOUNT (the service-account JSON from Firebase, see README 2.9.5).
+# Needs the repository secret FIREBASE_SERVICE_ACCOUNT (the service-account JSON from Firebase).
 name: Notify phones
 
 on:
@@ -22,6 +22,7 @@ jobs:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           token_format: access_token
           access_token_scopes: https://www.googleapis.com/auth/firebase.messaging
+          create_credentials_file: false
 
       - name: Send the ping to every phone
         env:
@@ -29,9 +30,14 @@ jobs:
           TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
           PROJECT=$(echo "$SERVICE_ACCOUNT" | jq -r .project_id)
-          sleep 15   # let raw.githubusercontent.com serve the new file first
-          curl -sS --fail-with-body -X POST \
-            "https://fcm.googleapis.com/v1/projects/$PROJECT/messages:send" \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"message"
+          sleep 15
+          cat > ping.json <<'JSON'
+          {
+            "message": {
+              "topic": "all",
+              "data": { "type": "news_ping" },
+              "android": { "priority": "HIGH" }
+            }
+          }
+          JSON
+          curl -sS --fail-with-body -X POST "https://fcm.googleapis.com/v1/projects/$PROJECT/messages:send" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d @ping.json
