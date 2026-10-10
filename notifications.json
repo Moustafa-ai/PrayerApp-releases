@@ -1,11 +1,3 @@
 {
-  "notifications": [
-    {
-      "id": "2026-10-10-154355",
-      "title": "test",
-      "body": "notification test",
-      "date": "2026-10-10 15:43",
-      "push": true
-    }
-  ]
+  "notifications": []
 }
