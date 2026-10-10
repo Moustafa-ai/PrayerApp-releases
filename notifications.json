@@ -1,10 +1,17 @@
 {
   "notifications": [
-       {
+    {
       "id": "2026-10-10-mv2d7yeb",
       "title": "لاتنس ذكر الله",
       "body": "لا اله الا الله --- محمد رسول الل",
       "date": "2026-10-10 15:25",
+      "push": true
+    },
+    {
+      "id": "2026-10-10-154355",
+      "title": "test",
+      "body": "notification test",
+      "date": "2026-10-10 15:43",
       "push": true
     }
   ]
